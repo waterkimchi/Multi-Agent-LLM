@@ -1,15 +1,19 @@
-import environment as env_obj
-import agent as agent_obj
-import asyncio
+from crewai import Crew, Process
+from tasks import research_task, write_task
+from agents import news_researcher, news_writer
 
-async def main():
-    env = env_obj.Environment()
 
-    for i in range(3):
-        agent = agent_obj.Agent(agent_id=i)
-        env.add_agent(agent)
+def main():
+    # forming the tech focused crew with some enhanced configuration
+    crew = Crew(
+        agents=[news_researcher, news_writer],
+        tasks=[research_task, write_task],
+        process=Process.sequential,
+    )
 
-    await env.simulate(num_interactions=4)
+    result = crew.kickoff(inputs={'topic': 'AI in healthcare'})
+    print(result)
 
+# starting the task execution process with enhanced feedback
 if __name__ == "__main__":
-    asyncio.run(main())
+    main()
